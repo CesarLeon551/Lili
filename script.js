@@ -1,61 +1,113 @@
-// read custom message from query strings
-// Tutorial -> https://youtu.be/6ojp1iWUKw8
+const characters = [
+    "harry", "hermione", "ron", "dumbledore", "snape", "voldemort", "draco", "luna"
+];
 
-const urlSearchParams = new URLSearchParams(window.location.search)
+const gameBoard = document.getElementById("game-board");
+const popup = document.getElementById("popup");
+const heartsContainer = document.getElementById("hearts");
+const yesButton = document.getElementById("yes-button");
+const noButton = document.getElementById("no-button");
 
-const messageCustom = urlSearchParams.get('message')
+let cardArray = [...characters, ...characters];
+cardArray.sort(() => 0.5 - Math.random());
 
-if (messageCustom) {
+let hasFlippedCard = false;
+let lockBoard = false;
+let firstCard, secondCard;
+let matchedPairs = 0;
 
-  const mainMessageElement = document.querySelector('#mainMessage')
-  mainMessageElement.textContent = decodeURI(messageCustom)
+function createCard(character) {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.innerHTML = `
+        <div class="card-inner">
+            <div class="card-front">?</div>
+            <div class="card-back" style="background-image: url('images/${character}.jpg');"></div>
+        </div>
+    `;
+    card.addEventListener("click", flipCard);
+    gameBoard.appendChild(card);
 }
 
-// the tutorial starts here
+cardArray.forEach(character => createCard(character));
 
-const btnOpenElement = document.querySelector('#open')
-const btnCloseElement = document.querySelector('#close')
+function flipCard() {
+    if (lockBoard) return;
+    if (this === firstCard) return;
 
-btnCloseElement.disabled = true
+    this.classList.add("flipped");
 
+    if (!hasFlippedCard) {
+        hasFlippedCard = true;
+        firstCard = this;
+        return;
+    }
 
+    secondCard = this;
+    checkForMatch();
+}
 
-btnOpenElement.addEventListener('click', ()=> {
-  btnOpenElement.disabled = true
-  btnCloseElement.disabled = false
-  const coverElement = document.querySelector('.cover')
-  coverElement.classList.add('open-cover')
+function checkForMatch() {
+    if (firstCard.innerHTML === secondCard.innerHTML) {
+        disableCards();
+        return;
+    }
+    unflipCards();
+}
 
-  setTimeout(()=>{
-    //
-    coverElement.style.zIndex = -1
-    
-    const paperElement = document.querySelector('.paper')
-    paperElement.classList.remove('close-paper')
-    paperElement.classList.add('open-paper')
+function disableCards() {
+    firstCard.removeEventListener("click", flipCard);
+    secondCard.removeEventListener("click", flipCard);
+    matchedPairs++;
 
-    // animacion del corazón
-    const heartElement = document.querySelector('.heart')
-    heartElement.style.display = 'block'
-  
-  }, 500)
+    if (matchedPairs === characters.length) {
+        setTimeout(() => {
+            showPopup();
+        }, 500);
+    }
 
-})
-btnCloseElement.addEventListener('click', ()=> {
-  btnOpenElement.disabled = false
-  btnCloseElement.disabled = true
+    resetBoard();
+}
 
-  const coverElement = document.querySelector('.cover')
-  const paperElement = document.querySelector('.paper')
-  paperElement.classList.remove('open-paper')
-  paperElement.classList.add('close-paper')
-  
-  setTimeout(()=>{
-    coverElement.style.zIndex = 0
-    coverElement.classList.remove('open-cover')
+function unflipCards() {
+    lockBoard = true;
 
-    // animacion del corazón
-    const heartElement = document.querySelector('.heart')
-    heartElement.style.display = 'none'
-  },500)
-})
+    setTimeout(() => {
+        firstCard.classList.remove("flipped");
+        secondCard.classList.remove("flipped");
+
+        resetBoard();
+    }, 1500);
+}
+
+function resetBoard() {
+    [hasFlippedCard, lockBoard] = [false, false];
+    [firstCard, secondCard] = [null, null];
+}
+
+function showPopup() {
+    popup.classList.add("show");
+    generateHearts();
+}
+
+function generateHearts() {
+    for (let i = 0; i < 30; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.style.left = `${Math.random() * 100}%`;
+        heart.style.animationDelay = `${Math.random() * 2}s`;
+        heart.style.animationDuration = `${2 + Math.random() * 2}s`;
+        heartsContainer.appendChild(heart);
+    }
+}
+
+yesButton.addEventListener("click", () => {
+    const phoneNumber = "3521381578"; // Reemplaza con tu número de teléfono
+    const message = "¡Hola! Dije que SI!!!!! jajajaj (Remplaza por lo que quieras)";
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.location.href = whatsappUrl;
+});
+
+noButton.addEventListener("click", () => {
+    noButton.style.display = "none";
+});

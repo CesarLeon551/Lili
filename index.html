@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carta</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Pares - Harry Potter</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main>
-    <div class="container-letter">
-      <div class="cover"></div>
-      <span class="heart">♥</span>
-      <p class="paper" id="mainMessage">
-        Desde que te conocí, sentí que algo cambió en mi mundo.Es como si hubiera tomado una poción de Amortentia y mi corazón se hubiera encantado de ti.
-      </p>
-      <div class="letter"></div>
+    <h1>Juego de Pares - Harry Potter</h1>
+    <div class="game-board" id="game-board">
+        <!-- Las cartas se generarán aquí -->
     </div>
-    <div class="options">
-      <button id="open">Abrir</button>
-      <button id="close">Cerrar</butto>
+    <div class="popup" id="popup">
+        <div class="hearts" id="hearts"></div>
+        <div class="popup-content">
+            <h2>¿Quieres ser mi Novia Mágica?</h2>
+            <button id="yes-button">Sí</button>
+            <button id="no-button">No</button>
+        </div>
     </div>
-  </main>
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
